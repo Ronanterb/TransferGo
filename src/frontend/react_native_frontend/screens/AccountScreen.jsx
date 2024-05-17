@@ -1,26 +1,30 @@
-import React from "react";
+import React, { useContext } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Header from "../components/Header";
+import { AuthContext } from "../context/AuthContext";
 
-
-const AccountScreen = () => {
+const AccountScreen = ({navigation}) => {
+    const {userAccount} = useContext(AuthContext);
     return (
         <View>
-            <Header label={"Account"} />
+            <Header label={"Account"} {...navigation} />
             <View style={styles.align}>
                     <Text>Current balance</Text>
-                    <Text>0000</Text>                    
+                    <Text>{userAccount.balance} FCFA</Text>                    
             </View>
 
-            <View style={styles.align}>
-                <Text>Last transaction</Text>
-                <Text>15-06-22</Text>
-            </View>
-            <TouchableOpacity style={styles.btn}>
+            <TouchableOpacity style={styles.btn} onPress={() => {navigation.navigate('TransactionList')}}>
+                <Text style={{color: "#fff"}}>View account transactions</Text>
+                <MaterialIcons name="arrow-forward-ios"  size={22} color="#fff"/>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.btn} onPress={() => {navigation.navigate('Password')}}>
                 <Text style={{color: "#fff"}}>Change password</Text>
+                <MaterialIcons name="arrow-forward-ios"  size={22} color="#fff"/>
             </TouchableOpacity>
             <TouchableOpacity style={styles.btn}>
                 <Text style={{color: "#fff"}}>Forgot password</Text>
+                <MaterialIcons name="arrow-forward-ios"  size={22} color="#fff"/>
             </TouchableOpacity>
         </View>
     )
@@ -29,7 +33,6 @@ const AccountScreen = () => {
 export default AccountScreen;
 
 const styles = StyleSheet.create({
-
     align: {
         alignItems: "center",
         flexDirection: 'row',
@@ -43,6 +46,9 @@ const styles = StyleSheet.create({
         marginRight: 10,
     },
     btn: {
+        alignItems: "center",
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         backgroundColor: '#2137B2',
         color: "#fff",
         padding: 20,

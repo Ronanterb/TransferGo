@@ -62,16 +62,23 @@ class ProfileCreateSerializer(serializers.ModelSerializer):
                 'required': True,
             },
             'pin': {
-                'write_only': True,
+                'read_only': True,
             },
+            'deleted_at': {
+                'read_only': True,
+            }
 
         }
 
     def create(self, validated_data):
         user = validated_data.pop('user')
+        print(user)
         serializer = UserSerializer(data=user)
         serializer.is_valid(raise_exception=True)
         user_instance = serializer.save()
+        user_instance.set_password(user_instance.password)
+        user_instance.save()
+        print(user_instance.password)
         validated_data['user'] = user_instance
 
         profile = Profile(**validated_data)
@@ -87,6 +94,15 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = '__all__'
+        extra_kwargs = {
+            'pin': {
+                'write_only': True,
+            },
+            'deleted_at': {
+                'write_only': True,
+            }
+
+        }
 
 
 class AccountSerializer(serializers.ModelSerializer):
@@ -112,7 +128,8 @@ class TransactionCreateserializer(serializers.ModelSerializer):
             },
             'receiver': {
                 'read_only': True,
-            }
+            },
+
         }
 
         def create(self, validated_data):
